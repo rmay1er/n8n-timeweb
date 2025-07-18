@@ -1,51 +1,43 @@
-version: '3.8'  
-  
-services:  
-  postgres:  
-    image: postgres:16.4  
-    restart: always  
-    environment:  
-      - POSTGRES_DB=n8n  
-      - POSTGRES_USER=admin_dev  
-      - POSTGRES_PASSWORD=clockwerck12  
-      - PGDATA=/var/lib/postgresql/data/pgdata  
-    volumes:  
-      - postgres_data:/var/lib/postgresql/data  
-    healthcheck:  
-      test: ['CMD-SHELL', 'pg_isready -U postgres']  
-      interval: 5s  
-      timeout: 5s  
-      retries: 5  
-  
-  n8n:  
-    image: ghcr.io/n8n-io/n8n:latest  
-    restart: always  
-    environment:  
-      - N8N_DIAGNOSTICS_ENABLED=false  
-      - N8N_USER_FOLDER=/n8n  
-      - DB_TYPE=postgresdb  
-      - DB_POSTGRESDB_HOST=postgres  
-      - DB_POSTGRESDB_DATABASE=n8n  
-      - DB_POSTGRESDB_USER=admin_dev  
-      - DB_POSTGRESDB_PASSWORD=clockwerck12 
-      # Task Runner config  
-      - N8N_RUNNERS_ENABLED=true  
-      - N8N_RUNNERS_MODE=internal  
-      # Disable Insights for production  
-      - N8N_DISABLED_MODULES=insights  
-    ports:  
-      - "5678:5678"  
-    volumes:  
-      - n8n_data:/n8n  
-    depends_on:  
-      postgres:  
-        condition: service_healthy  
-    #healthcheck:  
-      #test: ['CMD-SHELL', 'wget --spider -q http://localhost:5678/healthz || exit 1']  
-      #interval: 5s  
-      #timeout: 5s  
-      #retries: 10  
-  
-volumes:  
-  postgres_data:  
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.4
+    restart: always
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=admin_dev
+      - POSTGRES_PASSWORD=clockwerck12
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: ghcr.io/n8n-io/n8n:latest
+    restart: always
+    environment:
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_USER_FOLDER=/n8n
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=admin_dev
+      - DB_POSTGRESDB_PASSWORD=clockwerck12
+      - N8N_HOST=0.0.0.0
+      - WEBHOOK_TUNNEL_URL=https://rmay1er-n8n-timeweb-e42d.twc1.net
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
   n8n_data:
