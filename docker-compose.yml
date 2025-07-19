@@ -35,7 +35,7 @@ services:
       - DB_POSTGRESDB_DATABASE=n8n
       # 👉 unique_user - замените на своё значение (тоже самое что и для postgress)
       - DB_POSTGRESDB_USER=unique_user
-       # 👉 strong_password - замените на своё значение (тоже самое что и для postgress)
+      # 👉 strong_password - замените на своё значение (тоже самое что и для postgress)
       - DB_POSTGRESDB_PASSWORD=password
 
       # 👉 Правильный публичный URL, выданный TimeWeb, например https://repo_name-timeweb-000.twc1.net
