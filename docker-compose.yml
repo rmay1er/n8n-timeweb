@@ -58,4 +58,6 @@ services:
 
 volumes:
   postgres_data:
+    name: postgres_data_global
   n8n_data:
+    name: n8n_data_global
