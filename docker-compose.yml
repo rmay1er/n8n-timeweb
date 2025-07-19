@@ -5,14 +5,16 @@ services:
     image: postgres:16.4
     restart: always
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      # 👉 Явно задаём — НЕ через ${}, чтобы TimeWeb не потерял.
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=admindev
+      - POSTGRES_PASSWORD=clockwercktde5
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      # Проверка здоровья базы — ОК
+      test: ['CMD-SHELL', 'pg_isready -U admindev']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -21,22 +23,33 @@ services:
     image: ghcr.io/n8n-io/n8n:latest
     restart: always
     environment:
+      # 👉 Слушаем на всех интерфейсах и нужном порту.
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
+
+      # База — явно прописаны те же значения, что и в Postgres.
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
-      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
-      - DB_POSTGRESDB_USER=${POSTGRES_USER}
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-      - WEBHOOK_URL=${WEBHOOK_URL}
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=admindev
+      - DB_POSTGRESDB_PASSWORD=clockwercktde5
+
+      # Правильный публичный URL для генерации ссылок.
+      # WEBHOOK_URL=https://rmay1er-n8n-timeweb-9012.twc1.net
+
+      # Отключаем телеметрию.
       - N8N_DIAGNOSTICS_ENABLED=false
+
     ports:
       - "5678:5678"
+
     volumes:
       - n8n_data:/n8n
+
     depends_on:
       postgres:
         condition: service_healthy
+
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5678/healthz']
       interval: 10s
