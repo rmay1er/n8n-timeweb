@@ -35,7 +35,7 @@ services:
       - DB_POSTGRESDB_PASSWORD=clockwercktde5
 
       # Правильный публичный URL для генерации ссылок.
-      # WEBHOOK_URL=https://rmay1er-n8n-timeweb-9012.twc1.net
+      - WEBHOOK_URL=https://rmay1er-n8n-timeweb-9012.twc1.net
 
       # Отключаем телеметрию.
       - N8N_DIAGNOSTICS_ENABLED=false
