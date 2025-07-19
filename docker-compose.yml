@@ -5,10 +5,12 @@ services:
     image: postgres:16.4
     restart: always
     environment:
-      # 👉 Явно задаём — НЕ через ${}, чтобы TimeWeb не потерял.
+      # Явно задаём — НЕ через ${}, чтобы TimeWeb не потерял.
       - POSTGRES_DB=n8n
-      - POSTGRES_USER=admindev
-      - POSTGRES_PASSWORD=clockwercktde5
+      # 👉 unique_user - замените на своё значение
+      - POSTGRES_USER=unique_user
+      # 👉 strong_password - замените на своё значение
+      - POSTGRES_PASSWORD=strong_password
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -19,12 +21,11 @@ services:
       timeout: 5s
       retries: 5
 
-
   n8n:
     image: ghcr.io/n8n-io/n8n:latest
     restart: always
     environment:
-      # 👉 Слушаем на всех интерфейсах и нужном порту.
+      # Слушаем на всех интерфейсах и нужном порту.
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
 
@@ -32,11 +33,13 @@ services:
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_DATABASE=n8n
-      - DB_POSTGRESDB_USER=admindev
-      - DB_POSTGRESDB_PASSWORD=clockwercktde5
+      # 👉 unique_user - замените на своё значение (тоже самое что и для postgress)
+      - DB_POSTGRESDB_USER=unique_user
+       # 👉 strong_password - замените на своё значение (тоже самое что и для postgress)
+      - DB_POSTGRESDB_PASSWORD=password
 
-      # Правильный публичный URL для генерации ссылок.
-      - WEBHOOK_URL=https://rmay1er-n8n-timeweb-9012.twc1.net
+      # 👉 Правильный публичный URL, выданный TimeWeb, например https://repo_name-timeweb-000.twc1.net
+      - WEBHOOK_URL=
 
       # Отключаем телеметрию.
       - N8N_DIAGNOSTICS_ENABLED=false
@@ -58,6 +61,7 @@ services:
       retries: 5
 
 volumes:
+# Явное указание пути для создания тома с данными, что бы информация сохранялась после перезагрузки.
   postgres_data:
     name: postgres_data_global
   n8n_data:
